@@ -11,10 +11,6 @@ on:
         options:
           - us-east-1
           - us-east-2
-      CLUSTER_NAME:
-        description: "Cluster Name"
-        required: true
-        type: string
 
       EKS_ACTION:
         description: "EKS Action"
@@ -48,4 +44,4 @@ jobs:
            curl -sL "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_checksums.txt" | grep $PLATFORM | sha256sum --check
            tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
            sudo install -m 0755 /tmp/eksctl /usr/local/bin && rm /tmp/eksctl
-           eksctl ${{ inputs.EKS_ACTION }} cluster --name ${{ inputs.CLUSTER_NAME }} --region ${{ inputs.AWS_REGION}} -f cluster.yaml
+           eksctl ${{ inputs.EKS_ACTION }} --region ${{ inputs.AWS_REGION}} -f cluster.yaml
