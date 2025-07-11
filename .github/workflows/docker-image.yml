@@ -5,14 +5,9 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
-env:
-  TAG: $(date +%s)
-
+    
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
     environment: Prod
 
@@ -28,17 +23,17 @@ jobs:
     - name: Build Website
       working-directory: ./eventsapp/events-website
       run: |
-        docker build . --tag jamesrelph/events-website:${{ var.TAG }}
-        docker push jamesrelph/events-website:${{ var.TAG }}
+        docker build . --tag jamesrelph/events-website
+        docker push jamesrelph/events-website
 
     - name: Build API
       working-directory: ./eventsapp/events-api
       run: |
-        docker build . --tag jamesrelph/events-api:${{ var.TAG }}
-        docker push jamesrelph/events-api:${{ var.TAG }}
+        docker build . --tag jamesrelph/events-api
+        docker push jamesrelph/events-api
         
     - name: Build DBInit
       working-directory: ./eventsapp/events-dbinit
       run: |
-        docker build . --tag jamesrelph/events-dbinit:${{ var.TAG }}
-        docker push jamesrelph/events-dbinit:${{ var.TAG }}
+        docker build . --tag jamesrelph/events-dbinit
+        docker push jamesrelph/events-dbinit
