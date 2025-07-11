@@ -23,7 +23,7 @@ resource "aws_rds_cluster_instance" "primary" {
   engine_version       = aws_rds_global_cluster.events.engine_version
   identifier           = "events-primary-cluster-instance"
   cluster_identifier   = aws_rds_cluster.primary.id
-  instance_class       = "db.t4g.small"
+  instance_class       = "db.serverless"
   db_subnet_group_name = "default"
 }
 
@@ -50,8 +50,8 @@ resource "aws_rds_cluster_instance" "secondary" {
   provider             = aws.secondary
   engine               = aws_rds_global_cluster.events.engine
   engine_version       = aws_rds_global_cluster.events.engine_version
-  identifier           = "test-secondary-cluster-instance"
+  identifier           = "events-secondary-cluster-instance"
   cluster_identifier   = aws_rds_cluster.secondary.id
-  instance_class       = "db.t4g.small"
+  instance_class       = "db.serverless"
   db_subnet_group_name = "default"
 }
