@@ -28,17 +28,17 @@ jobs:
     - name: Build Website
       working-directory: ./eventsapp/events-website
       run: |
-        docker build . --tag jamesrelph/events-website:"$TAG"
-        docker push jamesrelph/events-website:"$TAG"
+        docker build . --tag jamesrelph/events-website:${{ env.TAG }}
+        docker push jamesrelph/events-website:${{ env.TAG }}
 
     - name: Build API
       working-directory: ./eventsapp/events-api
       run: |
-        docker build . --tag jamesrelph/events-api:"$TAG"
-        docker push jamesrelph/events-api:"$TAG"
+        docker build . --tag jamesrelph/events-api:${{ env.TAG }}
+        docker push jamesrelph/events-api:${{ env.TAG }}
         
     - name: Build DBInit
       working-directory: ./eventsapp/events-dbinit
       run: |
-        docker build . --tag jamesrelph/events-dbinit:"$TAG"
-        docker push jamesrelph/events-dbinit:"$TAG"
+        docker build . --tag jamesrelph/events-dbinit:${{ env.TAG }}
+        docker push jamesrelph/events-dbinit:${{ env.TAG }}
