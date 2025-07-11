@@ -15,4 +15,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . --file eventsapp/events-website/Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file eventsapp/events-website/Dockerfile --tag jamesrelph/events-website:$(date +%s)
+      run: docker build . --file eventsapp/events-api/Dockerfile --tag jamesrelph/events-api:$(date +%s)
+      run: docker build . --file eventsapp/events-dbinit/Dockerfile --tag jamesrelph/events-dbinit:$(date +%s)
