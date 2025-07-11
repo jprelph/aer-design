@@ -1,9 +1,5 @@
-resource "random_string" "suffix" {
-  length  = 8
-  special = false
-}
-
 data "aws_availability_zones" "available" {
+  provider = aws.primary
   filter {
     name   = "opt-in-status"
     values = ["opt-in-not-required"]
@@ -11,8 +7,8 @@ data "aws_availability_zones" "available" {
 }
 
 module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "5.21.0"
+  source   = "terraform-aws-modules/vpc/aws"
+  version  = "5.21.0"
 
   name = "events-vpc"
 
@@ -36,8 +32,8 @@ module "vpc" {
 }
 
 module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "20.37.1"
+  source   = "terraform-aws-modules/eks/aws"
+  version  = "20.37.1"
 
   cluster_name    = var.cluster_name
   cluster_version = "1.33"
