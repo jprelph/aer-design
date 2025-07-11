@@ -1,0 +1,39 @@
+name: EKS Control
+
+on:
+  workflow_dispatch:
+    inputs:
+      AwsRegion:
+        description: "AWS Region"
+        required: true
+        default: "us-east-1"
+        type: choice
+        options:
+          - us-east-1
+          - us-east-2
+      ClusterName:
+        description: "Cluster Name"
+        required: true
+        type: string
+
+      EksAction:
+        description: "EKS Action"
+        required: true
+        default: "create"
+        type: choice
+        options:
+          - create
+          - destroy
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: Prod
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Create EKS Cluster
+      uses: eksctl/eksctl@latest
+      
+       
