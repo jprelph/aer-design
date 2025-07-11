@@ -1,6 +1,5 @@
 FROM node:slim
-RUN ls
-COPY  eventsapp/events-website/app /app/
+COPY  . /app/
 WORKDIR /app
 RUN npm install
 CMD ["node", "server.js"]
