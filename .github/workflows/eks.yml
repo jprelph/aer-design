@@ -33,5 +33,5 @@ jobs:
     - uses: actions/checkout@v4
     - name: Create EKS Cluster
       working-directory: ./aws
-      uses: eksctl/eksctl@latest
-      run: eksctl ${{ inputs.EksAction }} --name ${{ inputs.ClusterName }} --region {{ inputs.AwsRegion }}
+      - uses: eksctl/eksctl@latest
+      - run: eksctl ${{ inputs.EksAction }} --name ${{ inputs.ClusterName }} --region {{ inputs.AwsRegion }}
