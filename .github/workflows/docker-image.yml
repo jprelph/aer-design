@@ -14,12 +14,21 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Docker Hub login
+    - uses: docker/login-action
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+       
     - name: Build Website
       working-directory: ./eventsapp/events-website
       run: docker build . --tag jamesrelph/events-website:$(date +%s)
+
     - name: Build API
       working-directory: ./eventsapp/events-api
       run: docker build . --tag jamesrelph/events-api:$(date +%s)
+    
     - name: Build DBInit
       working-directory: ./eventsapp/events-dbinit
       run: docker build . --tag jamesrelph/events-dbinit:$(date +%s)
