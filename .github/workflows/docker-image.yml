@@ -24,12 +24,18 @@ jobs:
        
     - name: Build Website
       working-directory: ./eventsapp/events-website
-      run: docker build . --tag jamesrelph/events-website:$(date +%s)
+      run: |
+        docker build . --tag jamesrelph/events-website:$(date +%s)
+        docker push
 
     - name: Build API
       working-directory: ./eventsapp/events-api
-      run: docker build . --tag jamesrelph/events-api:$(date +%s)
-    
+      run: |
+        docker build . --tag jamesrelph/events-api:$(date +%s)
+        docker push
+        
     - name: Build DBInit
       working-directory: ./eventsapp/events-dbinit
-      run: docker build . --tag jamesrelph/events-dbinit:$(date +%s)
+      run: |
+        docker build . --tag jamesrelph/events-dbinit:$(date +%s)
+        docker push
