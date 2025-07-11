@@ -3,7 +3,7 @@ name: EKS Control
 on:
   workflow_dispatch:
     inputs:
-      AwsRegion:
+      AWS_REGION:
         description: "AWS Region"
         required: true
         default: "us-east-1"
@@ -11,12 +11,12 @@ on:
         options:
           - us-east-1
           - us-east-2
-      ClusterName:
+      CLUSTER_NAME:
         description: "Cluster Name"
         required: true
         type: string
 
-      EksAction:
+      EKS_ACTION:
         description: "EKS Action"
         required: true
         default: "create"
@@ -31,7 +31,14 @@ jobs:
     environment: Prod
     steps:
     - uses: actions/checkout@v4
+
+    - name: Login to AWS
+      uses: aws-actions/configure-aws-credentials@v4.2.1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ inputs.AWS_REGION}}
+
     - name: Create EKS Cluster
       working-directory: ./aws
-      - uses: eksctl/eksctl@latest
-      - run: eksctl ${{ inputs.EksAction }} --name ${{ inputs.ClusterName }} --region {{ inputs.AwsRegion }}
+      run: eksctl ${{ inputs.EKS_ACTION }} --name ${{ inputs.CLUSTER_NAME }}
