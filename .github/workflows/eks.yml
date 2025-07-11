@@ -29,11 +29,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: Prod
-
     steps:
     - uses: actions/checkout@v4
-
     - name: Create EKS Cluster
+      working-directory: ./aws
       uses: eksctl/eksctl@latest
-      
-       
+      run: eksctl ${{ inputs.EksAction }} --name ${{ inputs.ClusterName }} --region {{ inputs.AwsRegion }}
