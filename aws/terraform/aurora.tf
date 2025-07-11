@@ -1,7 +1,7 @@
 resource "aws_rds_global_cluster" "events" {
   global_cluster_identifier = "global-events"
-  engine                    = "aurora"
-  engine_version            = "8.0.40.mysql_aurora.3.09.0"
+  engine                    = "aurora-mysql"
+  engine_version            = "8.0.mysql_aurora.3.09.0"
   database_name             = "events_db"
 }
 
