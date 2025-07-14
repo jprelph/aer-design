@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: events-api
+  name: events-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: events-api
+  template:
+    metadata:
+      labels:
+        app: events-api
+    spec:
+      containers:
+      - image: jamesrelph/events-api
+        name: events-api
+        ports:
+        - containerPort: 8082
+        env:
+        - name: DBHOST
+          value: "events-mariadb"
+        - name: DBUSER
+          value: "root"
+        - name: DBPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: "events-mariadb"
+              key: "mariadb-root-password"
+        - name: DBDATABASE
+          value: "events_db"
+      initContainers:
+      - image: jamesrelph/events-dbinit
+        name: events-dbinit
+        env:
+        - name: DBHOST
+          value: "events-mariadb"
+        - name: DBUSER
+          value: "root"
+        - name: DBPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: "events-mariadb"
+              key: "mariadb-root-password"
