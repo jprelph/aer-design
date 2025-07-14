@@ -1,4 +1,4 @@
-name: Helm Build
+name: Deploy Events
 
 on:
   workflow_dispatch:

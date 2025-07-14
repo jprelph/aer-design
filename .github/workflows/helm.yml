@@ -1,4 +1,4 @@
-name: Helm Build
+name: Helm Package
 on:
   push:
     paths:
