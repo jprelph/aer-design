@@ -32,10 +32,10 @@ jobs:
     - name: Package Helm Chart
       working-directory: ./helm
       run: |
-        helm package ./events 
+        helm package ./events
+        echo "$(helm show chart ./events | grep -E "^version:" | awk '{print $2}')" >> $GITHUB_ENV
 
     - name: Push Helm Chart
       working-directory: ./helm
       run: |
-        echo "$(helm show chart ./events | grep -E "^version:" | awk '{print $2}')" >> $VERSION
         helm push events-$VERSION.tgz oci://registry-1.docker.io/jamesrelph
