@@ -27,6 +27,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Set Variables
+      working-directory: ./aws/terraform
       run: |
         echo PRIMARY_REGION="$(awk -F"=" '/^region/ {print $2}' terraform.tfvars | sed 's/\"//g')" >> $GITHUB_ENV
         echo SECONDARY_REGION="$(awk -F"=" '/^sec_region/ {print $2}' terraform.tfvars | sed 's/\"//g')" >> $GITHUB_ENV
