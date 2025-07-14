@@ -31,16 +31,3 @@ spec:
               key: "mariadb-root-password"
         - name: DBDATABASE
           value: "events_db"
-      initContainers:
-      - image: jamesrelph/events-dbinit
-        name: events-dbinit
-        env:
-        - name: DBHOST
-          value: "events-mariadb"
-        - name: DBUSER
-          value: "root"
-        - name: DBPASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: "events-mariadb"
-              key: "mariadb-root-password"
