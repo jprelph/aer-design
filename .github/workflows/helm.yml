@@ -33,7 +33,7 @@ jobs:
       working-directory: ./helm
       run: |
         helm package ./events
-        echo "$(helm show chart ./events | grep -E "^version:" | awk '{print $2}')" >> $GITHUB_ENV
+        echo VERSION="$(helm show chart ./events | grep -E "^version:" | awk '{print $2}')" >> $GITHUB_ENV
 
     - name: Push Helm Chart
       working-directory: ./helm
