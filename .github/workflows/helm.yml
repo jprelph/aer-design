@@ -37,5 +37,5 @@ jobs:
     - name: Push Helm Chart
       working-directory: ./helm
       run: |
-        echo $(helm show chart ./events | grep -E "^version:" | awk '{print $2}') >> $VERSION
+        echo "$(helm show chart ./events | grep -E "^version:" | awk '{print $2}')" >> $VERSION
         helm push events-$VERSION.tgz oci://registry-1.docker.io/jamesrelph
