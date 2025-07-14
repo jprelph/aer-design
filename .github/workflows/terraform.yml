@@ -1,4 +1,4 @@
-name: EKS Control
+name: Terraform Control
 
 on:
   workflow_dispatch:
