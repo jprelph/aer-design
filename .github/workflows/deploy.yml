@@ -28,9 +28,9 @@ jobs:
 
     - name: Set Variables
       run: |
-        echo PRIMARY_REGION="$(awk -F"=" '/^region/ {print $2}' terraform.tfvars | sed 's/\"//g' >> $GITHUB_ENV
-        echo SECONDARY_REGION="$(awk -F"=" '/^sec_region/ {print $2}' terraform.tfvars | sed 's/\"//g' >> $GITHUB_ENV
-        echo CLUSTER_NAME="$(awk -F"=" '/^cluster_name/ {print $2}' terraform.tfvars | sed 's/\"//g' >> $GITHUB_ENV
+        echo PRIMARY_REGION="$(awk -F"=" '/^region/ {print $2}' terraform.tfvars | sed 's/\"//g')" >> $GITHUB_ENV
+        echo SECONDARY_REGION="$(awk -F"=" '/^sec_region/ {print $2}' terraform.tfvars | sed 's/\"//g')" >> $GITHUB_ENV
+        echo CLUSTER_NAME="$(awk -F"=" '/^cluster_name/ {print $2}' terraform.tfvars | sed 's/\"//g')" >> $GITHUB_ENV
     
     - name: Install Helm
       run: |
