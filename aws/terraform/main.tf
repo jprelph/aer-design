@@ -196,6 +196,7 @@ resource "aws_vpc_peering_connection" "peer" {
   vpc_id        = module.vpc.vpc_id
   peer_vpc_id   = module.vpc_secondary.vpc_id
   peer_owner_id = data.aws_caller_identity.peer.account_id
+  peer_region   = var.sec_region
   auto_accept   = false
 }
 
