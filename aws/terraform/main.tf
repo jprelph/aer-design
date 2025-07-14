@@ -30,10 +30,10 @@ module "vpc" {
   }
   version  = "5.21.0"
   name = "events-vpc"
-  cidr = "10.0.0.0/16"
+  cidr = var.primary_cidr
   azs  = slice(data.aws_availability_zones.available_primary.names, 0, 3)
-  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+  private_subnets = var.primary_vpc_private
+  public_subnets  = var.primary_vpc_public
   enable_nat_gateway   = true
   single_nat_gateway   = true
   enable_dns_hostnames = true
@@ -72,10 +72,10 @@ module "vpc_secondary" {
   }
   version  = "5.21.0"
   name = "events-vpc"
-  cidr = "10.0.0.0/16"
+  cidr = var.secondary_cidr
   azs  = slice(data.aws_availability_zones.available_secondary.names, 0, 3)
-  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+  private_subnets = var.secondary_vpc_private
+  public_subnets  = var.secondary_vpc_public
   enable_nat_gateway   = true
   single_nat_gateway   = true
   enable_dns_hostnames = true
@@ -126,7 +126,7 @@ resource "aws_rds_cluster" "primary" {
   db_subnet_group_name      = aws_db_subnet_group.events_primary.name
   skip_final_snapshot       = true
   serverlessv2_scaling_configuration {
-    max_capacity             = 1.0
+    max_capacity             = 2.0
     min_capacity             = 0.0
     seconds_until_auto_pause = 3600
   }
@@ -159,9 +159,8 @@ resource "aws_rds_cluster" "secondary" {
   global_cluster_identifier = aws_rds_global_cluster.events.id
   db_subnet_group_name      = aws_db_subnet_group.events_secondary.name
   skip_final_snapshot       = true
-  enable_global_write_forwarding = true
   serverlessv2_scaling_configuration {
-    max_capacity             = 1.0
+    max_capacity             = 2.0
     min_capacity             = 0.0
     seconds_until_auto_pause = 3600
   }
@@ -184,3 +183,50 @@ resource "aws_rds_cluster_instance" "secondary" {
   instance_class       = "db.serverless"
   db_subnet_group_name = aws_db_subnet_group.events_secondary.name
 }
+
+# Create VPC Peering to support Aurora Global Writer Endpoint
+
+data "aws_caller_identity" "peer" {
+  provider = aws.secondary
+}
+
+resource "aws_vpc_peering_connection" "peer" {
+  provider = aws.primary
+
+  vpc_id        = module.vpc.vpc_id
+  peer_vpc_id   = module.vpc_secondary.vpc_id
+  peer_owner_id = data.aws_caller_identity.peer.account_id
+  auto_accept   = false
+}
+
+# Accepter's side of the connection.
+resource "aws_vpc_peering_connection_accepter" "peer" {
+  provider = aws.secondary
+
+  vpc_peering_connection_id = aws_vpc_peering_connection.peer.id
+  auto_accept               = true
+}
+
+resource "aws_vpc_peering_connection_options" "requester" {
+  provider = aws.primary
+
+  # As options can't be set until the connection has been accepted
+  # create an explicit dependency on the accepter.
+  vpc_peering_connection_id = aws_vpc_peering_connection_accepter.peer.id
+
+  requester {
+    allow_remote_vpc_dns_resolution = true
+  }
+}
+
+resource "aws_vpc_peering_connection_options" "accepter" {
+  provider = aws.secondary
+
+  vpc_peering_connection_id = aws_vpc_peering_connection_accepter.peer.id
+
+  accepter {
+    allow_remote_vpc_dns_resolution = true
+  }
+}
+
+#Update route tables to support peering

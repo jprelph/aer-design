@@ -1,3 +1,9 @@
 region = "us-east-1"
 sec_region = "us-east-2"
 cluster_name = "jpr-cluster"
+primary_cidr = "10.0.0.0/16"
+secondary_cidr = "10.1.0.0/16"
+primary_vpc_private = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+primary_vpc_public = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+secondary_vpc_private = ["10.1.1.0/24", "10.1.2.0/24", "10.1.3.0/24"]
+secondary_vpc_public = ["10.1.4.0/24", "10.1.5.0/24", "10.1.6.0/24"]
