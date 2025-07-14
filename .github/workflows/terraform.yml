@@ -52,6 +52,6 @@ jobs:
     - name: Destroy Terraform
       working-directory: ./aws/terraform
       if: "${{ github.event.inputs.TERRAFORM_ACTION == 'destroy' }}"
-      run: terraform apply --auto-approve
+      run: terraform destroy --auto-approve
 
 
