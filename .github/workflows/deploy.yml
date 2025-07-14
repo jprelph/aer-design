@@ -59,5 +59,4 @@ jobs:
         aws eks --region $SECONDARY_REGION update-kubeconfig --name $CLUSTER_NAME
         #helm install events oci://registry-1.docker.io/jamesrelph/events
 
-
 #Configure Route53 here
