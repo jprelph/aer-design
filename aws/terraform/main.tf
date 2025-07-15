@@ -235,16 +235,16 @@ resource "aws_vpc_peering_connection_options" "accepter" {
 
 resource "aws_route" "secondary_peer" {
   provider                  = aws.primary
-  for_each                  = toset(module.vpc.private_route_table_ids)
-  route_table_id            = each.key
+  count                     = length(module.vpc.private_route_table_ids)
+  route_table_id            = tolist(module.vpc.private_route_table_ids)[count.index]
   destination_cidr_block    = var.secondary_cidr
   vpc_peering_connection_id = aws_vpc_peering_connection.peer.id
 }
 
 resource "aws_route" "primary_peer" {
   provider                  = aws.secondary
-  for_each                  = toset(module.vpc_secondary.private_route_table_ids)
-  route_table_id            = each.key
+  count                     = length(module.vpc_secondary.private_route_table_ids)
+  route_table_id            = tolist(module.vpc_secondary.private_route_table_ids)[count.index]
   destination_cidr_block    = var.primary_cidr
   vpc_peering_connection_id = aws_vpc_peering_connection.peer.id
 }
