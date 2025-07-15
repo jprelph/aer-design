@@ -37,6 +37,7 @@ module "vpc" {
   enable_nat_gateway   = true
   single_nat_gateway   = true
   enable_dns_hostnames = true
+
   public_subnet_tags = {
     "kubernetes.io/role/elb" = 1
   }
@@ -231,3 +232,19 @@ resource "aws_vpc_peering_connection_options" "accepter" {
 }
 
 #Update route tables to support peering
+
+resource "aws_route" "secondary_peer" {
+  provider                  = aws.primary
+  for_each                  = toset(module.vpc.private_route_table_ids)
+  route_table_id            = each.key
+  destination_cidr_block    = var.secondary_cidr
+  vpc_peering_connection_id = aws_vpc_peering_connection.peer.id
+}
+
+resource "aws_route" "primary_peer" {
+  provider                  = aws.secondary
+  for_each                  = toset(module.vpc_secondary.private_route_table_ids)
+  route_table_id            = each.key
+  destination_cidr_block    = var.primary_cidr
+  vpc_peering_connection_id = aws_vpc_peering_connection.peer.id
+}
