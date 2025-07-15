@@ -58,7 +58,7 @@ module "eks" {
   enable_cluster_creator_admin_permissions = true
   cluster_compute_config = {
     enabled    = true
-    node_pools = ["general-purpose"]
+    node_pools = []
   }
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
@@ -100,7 +100,7 @@ module "eks_secondary" {
   enable_cluster_creator_admin_permissions = true
   cluster_compute_config = {
     enabled    = true
-    node_pools = ["general-purpose"]
+    node_pools = []
   }
   vpc_id     = module.vpc_secondary.vpc_id
   subnet_ids = module.vpc_secondary.private_subnets

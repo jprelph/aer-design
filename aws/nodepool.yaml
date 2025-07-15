@@ -1,7 +1,7 @@
 apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
-  name: my-node-pool
+  name: burstable-pool
 spec:
   template:
     metadata:
@@ -16,13 +16,13 @@ spec:
       requirements:
         - key: "eks.amazonaws.com/instance-category"
           operator: In
-          values: ["c", "m", "r"]
+          values: ["t"]
         - key: "eks.amazonaws.com/instance-cpu"
           operator: In
-          values: ["4", "8", "16", "32"]
+          values: ["1", "2", "4", "8"]
         - key: "topology.kubernetes.io/zone"
           operator: In
-          values: ["us-west-2a", "us-west-2b"]
+          values: ["us-east-1a", "us-east-1b", us-east-1c]
         - key: "kubernetes.io/arch"
           operator: In
           values: ["arm64", "amd64"]
