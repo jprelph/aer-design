@@ -37,14 +37,13 @@ module "vpc" {
   enable_nat_gateway   = true
   single_nat_gateway   = true
   enable_dns_hostnames = true
-
   public_subnet_tags = {
     "kubernetes.io/role/elb" = 1
-    var.cluster_name"-public"
+    name = "${var.cluster_name}-public"
   }
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = 1
-    var.cluster_name"-private"
+    name = "${var.cluster_name}-private"
   }
 }
 
@@ -106,9 +105,11 @@ module "vpc_secondary" {
   enable_dns_hostnames = true
   public_subnet_tags = {
     "kubernetes.io/role/elb" = 1
+    name = "${var.cluster_name}-public"
   }
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = 1
+    name = "${var.cluster_name}-private"
   }
 }
 
