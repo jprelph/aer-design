@@ -3,13 +3,13 @@ kind: NodeClass
 metadata:
   name: burstable
 spec:
-  role: aer-cluster-node-role
+  role: {{ .Values.iamRole }}
   subnetSelectorTerms:
     - tags:
-        cluster: "aer-cluster-private"
+        cluster: {{ .Values.clusterName }}
   securityGroupSelectorTerms:
     - tags:
-        cluster: "aer-cluster"
+        cluster: {{ .Values.clusterName }}
   ephemeralStorage:
     size: "80Gi"    # Range: 1-9000Gi or 1-64000G or 1-58Ti or 1-64T
     iops: 3000      # Range: 3000-16000

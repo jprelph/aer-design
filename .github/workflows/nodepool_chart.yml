@@ -2,11 +2,11 @@ name: Helm Package
 on:
   push:
     paths:
-      - helm/**
+      - helm/nodepool
     branches: [ "main" ]
   pull_request:
     paths:
-      - helm/**
+      - helm/nodepool
     branches: [ "main" ]
     
 jobs:
@@ -32,10 +32,10 @@ jobs:
     - name: Package Helm Chart
       working-directory: ./helm
       run: |
-        helm package ./events
-        echo VERSION="$(helm show chart ./events | grep -E "^version:" | awk '{print $2}')" >> $GITHUB_ENV
+        helm package ./nodepool
+        echo VERSION="$(helm show chart ./nodepool | grep -E "^version:" | awk '{print $2}')" >> $GITHUB_ENV
 
     - name: Push Helm Chart
       working-directory: ./helm
       run: |
-        helm push events-$VERSION.tgz oci://registry-1.docker.io/jamesrelph
+        helm push nodepool-$VERSION.tgz oci://registry-1.docker.io/jamesrelph

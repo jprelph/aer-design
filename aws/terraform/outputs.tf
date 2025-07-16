@@ -10,6 +10,14 @@ output "secondary_vpc_id" {
     value = module.vpc_secondary.vpc_id
 }
 
+output "primary_azs" {
+    value = module.vpc.azs
+}
+
+output "secondary_azs" {
+    value = module.vpc_secondary.azs
+}
+
 output "primary_private_subnets" {
     value = module.vpc.private_subnets
 }
