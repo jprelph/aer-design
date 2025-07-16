@@ -2,11 +2,11 @@ name: Nodepool Chart Package
 on:
   push:
     paths:
-      - helm/nodepool
+      - helm/nodepool/**
     branches: [ "main" ]
   pull_request:
     paths:
-      - helm/nodepool
+      - helm/nodepool/**
     branches: [ "main" ]
     
 jobs:
