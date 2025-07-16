@@ -39,11 +39,11 @@ module "vpc" {
   enable_dns_hostnames = true
   public_subnet_tags = {
     "kubernetes.io/role/elb" = 1
-    name = "${var.cluster_name}-public"
+    "cluster" = "${var.cluster_name}-public"
   }
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = 1
-    name = "${var.cluster_name}-private"
+    "cluster" = "${var.cluster_name}-private"
   }
 }
 
@@ -57,14 +57,18 @@ module "eks" {
   cluster_version = "1.33"
   cluster_endpoint_public_access           = true
   enable_cluster_creator_admin_permissions = true
-  node_iam_role_name = "EKS-JPR-NodeRole"
-  node_security_group_name = "EKS-JPR-NodeSG"
   cluster_compute_config = {
     enabled    = true
     node_pools = []
   }
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
+  node_iam_role_tags = {
+    "cluster" = var.cluster_name
+  }
+  node_security_group_tags = {
+    "cluster" = var.cluster_name
+  }
 }
 
 # Create Access entry for EKS without default nodeclass and nodepool
@@ -105,11 +109,11 @@ module "vpc_secondary" {
   enable_dns_hostnames = true
   public_subnet_tags = {
     "kubernetes.io/role/elb" = 1
-    name = "${var.cluster_name}-public"
+    "cluster" = "${var.cluster_name}-public"
   }
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = 1
-    name = "${var.cluster_name}-private"
+    "cluster" = "${var.cluster_name}-private"
   }
 }
 
@@ -123,14 +127,18 @@ module "eks_secondary" {
   cluster_version = "1.33"
   cluster_endpoint_public_access           = true
   enable_cluster_creator_admin_permissions = true
-  node_iam_role_name = "EKS-JPR-NodeRole"
-  node_security_group_name = "EKS-JPR-NodeSG"
   cluster_compute_config = {
     enabled    = true
     node_pools = []
   }
   vpc_id     = module.vpc_secondary.vpc_id
   subnet_ids = module.vpc_secondary.private_subnets
+  node_iam_role_tags = {
+    "cluster" = var.cluster_name
+  }
+   node_security_group_tags = {
+    "cluster" = var.cluster_name
+  }
 }
 
 # Create Access entry for EKS without default nodeclass and nodepool
@@ -147,7 +155,6 @@ resource "aws_eks_access_policy_association" "auto_mode_secondary" {
   cluster_name  = module.eks_secondary.cluster_name
   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSAutoNodePolicy"
   principal_arn = module.eks_secondary.node_iam_role_arn
-
   access_scope {
     type = "cluster"
   }

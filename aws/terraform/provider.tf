@@ -19,9 +19,9 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket = "aer-tf"
+    bucket = "aer-terraform"
     key    = "state/terraform.tfstate"
-    region = "us-east-1"
+    region = "eu-west-2"
     use_lockfile = true
   }
 }
