@@ -1,17 +1,14 @@
 apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
-  name: burstable-pool
+  name: burstable
 spec:
   template:
-    metadata:
-      labels:
-        billing-team: my-team
     spec:
       nodeClassRef:
         group: eks.amazonaws.com
         kind: NodeClass
-        name: default
+        name: burstable
 
       requirements:
         - key: "eks.amazonaws.com/instance-category"
@@ -25,7 +22,7 @@ spec:
           values: ["us-east-1a", "us-east-1b", us-east-1c]
         - key: "kubernetes.io/arch"
           operator: In
-          values: ["arm64", "amd64"]
+          values: ["amd64"]
 
   limits:
     cpu: "1000"

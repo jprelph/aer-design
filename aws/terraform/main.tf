@@ -40,9 +40,11 @@ module "vpc" {
 
   public_subnet_tags = {
     "kubernetes.io/role/elb" = 1
+    var.cluster_name"-public"
   }
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = 1
+    var.cluster_name"-private"
   }
 }
 
@@ -56,12 +58,34 @@ module "eks" {
   cluster_version = "1.33"
   cluster_endpoint_public_access           = true
   enable_cluster_creator_admin_permissions = true
+  node_iam_role_name = "EKS-JPR-NodeRole"
+  node_security_group_name = "EKS-JPR-NodeSG"
   cluster_compute_config = {
     enabled    = true
-    node_pools = ["system"]
+    node_pools = []
   }
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
+}
+
+# Create Access entry for EKS without default nodeclass and nodepool
+
+resource "aws_eks_access_entry" "auto_mode" {
+  provider = aws.primary
+  cluster_name  = module.eks.cluster_name
+  principal_arn = module.eks.node_iam_role_arn
+  type          = "EC2"
+}
+
+resource "aws_eks_access_policy_association" "auto_mode" {
+  provider = aws.primary
+  cluster_name  = module.eks.cluster_name
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSAutoNodePolicy"
+  principal_arn = module.eks.node_iam_role_arn
+
+  access_scope {
+    type = "cluster"
+  }
 }
 
 # Secondary VPC and EKS Cluster 
@@ -98,12 +122,34 @@ module "eks_secondary" {
   cluster_version = "1.33"
   cluster_endpoint_public_access           = true
   enable_cluster_creator_admin_permissions = true
+  node_iam_role_name = "EKS-JPR-NodeRole"
+  node_security_group_name = "EKS-JPR-NodeSG"
   cluster_compute_config = {
     enabled    = true
-    node_pools = ["system"]
+    node_pools = []
   }
   vpc_id     = module.vpc_secondary.vpc_id
   subnet_ids = module.vpc_secondary.private_subnets
+}
+
+# Create Access entry for EKS without default nodeclass and nodepool
+
+resource "aws_eks_access_entry" "auto_mode_secondary" {
+  provider = aws.secondary
+  cluster_name  = module.eks_secondary.cluster_name
+  principal_arn = module.eks_secondary.node_iam_role_arn
+  type          = "EC2"
+}
+
+resource "aws_eks_access_policy_association" "auto_mode_secondary" {
+  provider = aws.secondary
+  cluster_name  = module.eks_secondary.cluster_name
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSAutoNodePolicy"
+  principal_arn = module.eks_secondary.node_iam_role_arn
+
+  access_scope {
+    type = "cluster"
+  }
 }
 
 # Primary Aurora Cluster
