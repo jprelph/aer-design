@@ -63,6 +63,8 @@ module "eks" {
   }
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
+  node_iam_role_name = "${var.cluster.name}-node-role"
+  node_iam_role_use_name_prefix = false
   node_iam_role_tags = {
     "cluster" = var.cluster_name
   }
@@ -133,31 +135,8 @@ module "eks_secondary" {
   }
   vpc_id     = module.vpc_secondary.vpc_id
   subnet_ids = module.vpc_secondary.private_subnets
-  node_iam_role_tags = {
-    "cluster" = var.cluster_name
-  }
-   node_security_group_tags = {
-    "cluster" = var.cluster_name
-  }
-}
-
-# Create Access entry for EKS without default nodeclass and nodepool
-
-resource "aws_eks_access_entry" "auto_mode_secondary" {
-  provider = aws.secondary
-  cluster_name  = module.eks_secondary.cluster_name
-  principal_arn = module.eks_secondary.node_iam_role_arn
-  type          = "EC2"
-}
-
-resource "aws_eks_access_policy_association" "auto_mode_secondary" {
-  provider = aws.secondary
-  cluster_name  = module.eks_secondary.cluster_name
-  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSAutoNodePolicy"
-  principal_arn = module.eks_secondary.node_iam_role_arn
-  access_scope {
-    type = "cluster"
-  }
+  create_node_iam_role = false
+  node_iam_role_arn = module.eks.node_iam_role_arn
 }
 
 # Primary Aurora Cluster
