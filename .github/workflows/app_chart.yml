@@ -1,4 +1,4 @@
-name: Helm Package
+name: App Chart Package
 on:
   push:
     paths:
