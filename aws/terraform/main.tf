@@ -63,7 +63,7 @@ module "eks" {
   }
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
-  node_iam_role_name = "${var.cluster.name}-node-role"
+  node_iam_role_name = "${var.cluster_name}-node-role"
   node_iam_role_use_name_prefix = false
   node_iam_role_tags = {
     "cluster" = var.cluster_name
@@ -136,7 +136,6 @@ module "eks_secondary" {
   vpc_id     = module.vpc_secondary.vpc_id
   subnet_ids = module.vpc_secondary.private_subnets
   create_node_iam_role = false
-  node_iam_role_arn = module.eks.node_iam_role_arn
 }
 
 # Primary Aurora Cluster
