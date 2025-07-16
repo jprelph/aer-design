@@ -2,11 +2,11 @@ name: App Chart Package
 on:
   push:
     paths:
-      - helm/events
+      - helm/events/**
     branches: [ "main" ]
   pull_request:
     paths:
-      - helm/events
+      - helm/events/**
     branches: [ "main" ]
     
 jobs:
