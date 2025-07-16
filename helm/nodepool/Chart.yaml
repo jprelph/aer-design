@@ -5,4 +5,4 @@ description: AWS EKS NodeClass and NodePool Config
 type: application
 
 version: 1.0.0
-appVersion: "1.0.1"
+appVersion: "1.0.2"
