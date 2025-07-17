@@ -13,6 +13,29 @@ resource "aws_db_subnet_group" "events_primary" {
   subnet_ids = module.vpc.private_subnets
 }
 
+resource "aws_security_group" "rds_cluster_primary" {
+  name        = "allow_ssh"
+  description = "Allow SSH inbound traffic and all outbound traffic"
+  vpc_id      = module.vpc.vpc_id
+  tags = {
+    Name = "allow_ssh"
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_mysql_primary" {
+  security_group_id = aws_security_group.rds_cluster_primary.id
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 3306
+  ip_protocol       = "tcp"
+  to_port           = 3306
+}
+
+resource "aws_vpc_security_group_egress_rule" "allow_mysql_primary" {
+  security_group_id = aws_security_group.rds_cluster_primary.id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "-1"
+}
+
 resource "aws_rds_cluster" "primary" {
   provider                  = aws.primary
   engine                    = aws_rds_global_cluster.events.engine
@@ -25,6 +48,7 @@ resource "aws_rds_cluster" "primary" {
   global_cluster_identifier = aws_rds_global_cluster.events.id
   db_subnet_group_name      = aws_db_subnet_group.events_primary.name
   skip_final_snapshot       = true
+  vpc_security_group_ids    = [aws_security_group.rds_cluster_primary.id]
   serverlessv2_scaling_configuration {
     max_capacity             = 2.0
     min_capacity             = 0.0
@@ -50,6 +74,30 @@ resource "aws_db_subnet_group" "events_secondary" {
   subnet_ids = module.vpc_secondary.private_subnets
 }
 
+resource "aws_security_group" "rds_cluster_secondary" {
+  name        = "allow_ssh"
+  description = "Allow SSH inbound traffic and all outbound traffic"
+  vpc_id      = module.vpc_secondary.vpc_id
+
+  tags = {
+    Name = "allow_ssh"
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_mysql_secondary" {
+  security_group_id = aws_security_group.rds_cluster_secondary.id
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 3306
+  ip_protocol       = "tcp"
+  to_port           = 3306
+}
+
+resource "aws_vpc_security_group_egress_rule" "allow_mysql_secondary" {
+  security_group_id = aws_security_group.rds_cluster_secondary.id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "-1"
+}
+
 resource "aws_rds_cluster" "secondary" {
   provider                  = aws.secondary
   engine                    = aws_rds_global_cluster.events.engine
@@ -58,6 +106,7 @@ resource "aws_rds_cluster" "secondary" {
   cluster_identifier        = "events-secondary-cluster"
   global_cluster_identifier = aws_rds_global_cluster.events.id
   db_subnet_group_name      = aws_db_subnet_group.events_secondary.name
+  vpc_security_group_ids    = [aws_security_group.rds_cluster_secondary.id]
   skip_final_snapshot       = true
   serverlessv2_scaling_configuration {
     max_capacity             = 2.0
