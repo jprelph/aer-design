@@ -15,7 +15,10 @@ module "eks" {
     node_pools = []
   }
   vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
+  subnet_ids = setunion(
+    module.vpc.public_subnets,
+    module.vpc.private_subnets
+  )
   node_iam_role_name = "${var.cluster_name}-node-role"
   node_iam_role_use_name_prefix = false
   node_iam_role_tags = {
@@ -62,7 +65,10 @@ module "eks_secondary" {
     node_pools = []
   }
   vpc_id     = module.vpc_secondary.vpc_id
-  subnet_ids = module.vpc_secondary.private_subnets
+  subnet_ids = setunion(
+    module.vpc_secondary.public_subnets,
+    module.vpc_secondary.private_subnets
+  )
   create_node_iam_role = false
   node_security_group_tags = {
     "cluster" = var.cluster_name
