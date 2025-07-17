@@ -43,7 +43,7 @@ output "dbUser" {
 }
 
 output "dbPassword" {
-    value = aws_rds_cluster.primary.master_username
+    value = aws_rds_cluster.primary.master_password
 }
 
 output "dbName" {
