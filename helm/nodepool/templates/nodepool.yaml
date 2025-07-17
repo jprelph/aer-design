@@ -19,7 +19,11 @@ spec:
           values: ["1", "2", "4", "8"]
         - key: "topology.kubernetes.io/zone"
           operator: In
+          {{- if eq .Values.failoverRegion "primary" }}
+          values: {{ toJson .Values.primaryAzs }}
+          {{- else if eq .Values.failoverRegion "secondary" }} 
           values: {{ toJson .Values.secondaryAzs }}
+          {{- end }}
         - key: "kubernetes.io/arch"
           operator: In
           values: ["amd64"]

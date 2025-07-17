@@ -69,11 +69,20 @@ jobs:
         chmod 700 get_helm.sh
         ./get_helm.sh
 
-    - name: Configure Nodepool
+    - name: Configure Nodepool Primary
       working-directory: ./aws/terraform
       if: "${{ github.event.inputs.TERRAFORM_ACTION == 'apply' }}"
       # Some if about nodepool existing
       run: |
-        terraform output -json | jq -r 'to_entries[] | "\(.key): \(.value.value)"' >> values.yaml
-        cat values.yaml
-        
+        aws eks update-kubeconfig --region eu-west-1 --name aer-cluster
+        terraform output -json | jq -r 'to_entries[] | "\(.key): \(.value.value)"' >> /tmp/values.yaml
+        helm install nodepool -f /tmp/values.yaml --set failoverRegion=primary oci://registry-1.docker.io/jamesrelph/nodepool:1.1.0
+
+    - name: Configure Nodepool Secondary
+      working-directory: ./aws/terraform
+      if: "${{ github.event.inputs.TERRAFORM_ACTION == 'apply' }}"
+      # Some if about nodepool existing
+      run: |
+        aws eks update-kubeconfig --region eu-west-2 --name aer-cluster
+        terraform output -json | jq -r 'to_entries[] | "\(.key): \(.value.value)"' >> /tmp/values.yaml
+        helm install nodepool -f /tmp/values.yaml --set failoverRegion=secondary oci://registry-1.docker.io/jamesrelph/nodepool:1.1.0
