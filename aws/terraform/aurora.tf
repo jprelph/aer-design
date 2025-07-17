@@ -19,8 +19,8 @@ resource "aws_rds_cluster" "primary" {
   engine_version            = aws_rds_global_cluster.events.engine_version
   engine_mode               = "provisioned"
   cluster_identifier        = "events-primary-cluster"
-  manage_master_user_password = true
   master_username           = "events_user"
+  master_password           = "somepass123"
   database_name             = "events_db"
   global_cluster_identifier = aws_rds_global_cluster.events.id
   db_subnet_group_name      = aws_db_subnet_group.events_primary.name

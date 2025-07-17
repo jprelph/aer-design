@@ -42,6 +42,10 @@ output "dbUser" {
     value = aws_rds_cluster.primary.master_username
 }
 
+output "dbPassword" {
+    value = aws_rds_cluster.primary.master_username
+}
+
 output "dbName" {
    value = aws_rds_cluster.primary.database_name
 }
