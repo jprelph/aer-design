@@ -43,6 +43,7 @@ output "dbUser" {
 }
 
 output "dbPassword" {
+    sensitive = true
     value = aws_rds_cluster.primary.master_password
 }
 
