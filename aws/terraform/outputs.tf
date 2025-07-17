@@ -33,3 +33,15 @@ output "nodeIamRoleArn" {
 output "nodeIamRoleName" {
     value = module.eks.node_iam_role_name
 }
+
+output "globalEndpoint" {
+    value = aws_rds_global_cluster.events.endpoint
+}
+
+output "dbUser" {
+    value = aws_rds_cluster.primary.master_username
+}
+
+output "dbName" {
+   value = aws_rds_cluster.primary.database_name
+}

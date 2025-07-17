@@ -21,13 +21,10 @@ spec:
         - containerPort: 8082
         env:
         - name: DBHOST
-          value: "events-mariadb"
+          value: {{ .Values.globalEndpoint }}
         - name: DBUSER
-          value: "root"
+          value: {{ .Values.dbUser }}
         - name: DBPASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: "events-mariadb"
-              key: "mariadb-root-password"
+          value: {{ .Values.dbPassword }}
         - name: DBDATABASE
-          value: "events_db"
+          value: {{ .Values.dbName }}
