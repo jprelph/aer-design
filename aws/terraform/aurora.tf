@@ -14,6 +14,7 @@ resource "aws_db_subnet_group" "events_primary" {
 }
 
 resource "aws_security_group" "rds_cluster_primary" {
+  provider    = aws.primary
   name        = "allow_ssh"
   description = "Allow SSH inbound traffic and all outbound traffic"
   vpc_id      = module.vpc.vpc_id
@@ -23,6 +24,7 @@ resource "aws_security_group" "rds_cluster_primary" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "allow_mysql_primary" {
+  provider          = aws.primary
   security_group_id = aws_security_group.rds_cluster_primary.id
   cidr_ipv4         = "0.0.0.0/0"
   from_port         = 3306
@@ -31,6 +33,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_mysql_primary" {
 }
 
 resource "aws_vpc_security_group_egress_rule" "allow_mysql_primary" {
+  provider          = aws.primary
   security_group_id = aws_security_group.rds_cluster_primary.id
   cidr_ipv4         = "0.0.0.0/0"
   ip_protocol       = "-1"
@@ -75,6 +78,7 @@ resource "aws_db_subnet_group" "events_secondary" {
 }
 
 resource "aws_security_group" "rds_cluster_secondary" {
+  provider    = aws.secondary
   name        = "allow_ssh"
   description = "Allow SSH inbound traffic and all outbound traffic"
   vpc_id      = module.vpc_secondary.vpc_id
@@ -85,6 +89,7 @@ resource "aws_security_group" "rds_cluster_secondary" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "allow_mysql_secondary" {
+  provider          = aws.secondary
   security_group_id = aws_security_group.rds_cluster_secondary.id
   cidr_ipv4         = "0.0.0.0/0"
   from_port         = 3306
@@ -93,6 +98,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_mysql_secondary" {
 }
 
 resource "aws_vpc_security_group_egress_rule" "allow_mysql_secondary" {
+  provider          = aws.secondary
   security_group_id = aws_security_group.rds_cluster_secondary.id
   cidr_ipv4         = "0.0.0.0/0"
   ip_protocol       = "-1"

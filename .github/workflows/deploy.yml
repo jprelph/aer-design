@@ -10,6 +10,7 @@ on:
         type: choice
         options:
           - install
+          - update
           - uninstall
     
 jobs:
@@ -56,16 +57,16 @@ jobs:
         curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
         chmod 700 get_helm.sh
         ./get_helm.sh
-    
+
     - name: Install Helm Chart Primary
       working-directory: ./aws/terraform
       if: "${{ github.event.inputs.HELM_ACTION == 'install' }}"
       run: |
         aws eks --region $PRIMARY_REGION update-kubeconfig --name $CLUSTER_NAME
         terraform output -json | jq -r 'to_entries[] | "\(.key): \(.value.value)"' >> /tmp/values.yaml
+        helm install dbinit -f /tmp/values.yaml oci://registry-1.docker.io/jamesrelph/dbinit
         helm install events -f /tmp/values.yaml oci://registry-1.docker.io/jamesrelph/events
         
-
     - name: Install Helm Chart Secondary
       working-directory: ./aws/terraform
       if: "${{ github.event.inputs.HELM_ACTION == 'install' }}"
@@ -73,5 +74,17 @@ jobs:
         aws eks --region $SECONDARY_REGION update-kubeconfig --name $CLUSTER_NAME
         terraform output -json | jq -r 'to_entries[] | "\(.key): \(.value.value)"' >> /tmp/values.yaml
         helm install events -f /tmp/values.yaml oci://registry-1.docker.io/jamesrelph/events
+
+    - name: Delete Helm Chart Primary
+      working-directory: ./aws/terraform
+      if: "${{ github.event.inputs.HELM_ACTION == 'update' }}"
+      run: |
+        helm delete events
+        
+    - name: Delete Helm Chart Secondary
+      working-directory: ./aws/terraform
+      if: "${{ github.event.inputs.HELM_ACTION == 'update' }}"
+      run: |
+        helm delete events
 
 #Configure Route53 here
