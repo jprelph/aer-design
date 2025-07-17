@@ -1,9 +1,0 @@
-clusterName: aer-cluster
-nodeIamRoleArn: arn:aws:iam::670114001127:role/aer-cluster-node-role
-nodeIamRoleName: aer-cluster-node-role
-primaryAzs: ["eu-west-1a","eu-west-1b","eu-west-1c"]
-primaryPrivateSubnets: ["subnet-0994e579e833bce43","subnet-080559f21d75eea74","subnet-0c7114d2cae2effb6"]
-primaryVpcId: vpc-0a511451577655b7b
-secondaryAzs: ["eu-west-2a","eu-west-2b","eu-west-2c"]
-secondaryPrivateSubnets: ["subnet-0d625a929db9758d0","subnet-0fcf2eefe538148c7","subnet-0a5329e109f4e07e6"]
-secondaryVpcId: vpc-0b7f84eb0011b9e63

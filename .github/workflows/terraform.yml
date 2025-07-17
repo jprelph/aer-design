@@ -72,7 +72,6 @@ jobs:
     - name: Configure Nodepool Primary
       working-directory: ./aws/terraform
       if: "${{ github.event.inputs.TERRAFORM_ACTION == 'apply' }}"
-      # Some if about nodepool existing
       run: |
         aws eks update-kubeconfig --region eu-west-1 --name aer-cluster
         terraform output -json | jq -r 'to_entries[] | "\(.key): \(.value.value)"' >> /tmp/values.yaml
@@ -81,7 +80,6 @@ jobs:
     - name: Configure Nodepool Secondary
       working-directory: ./aws/terraform
       if: "${{ github.event.inputs.TERRAFORM_ACTION == 'apply' }}"
-      # Some if about nodepool existing
       run: |
         aws eks update-kubeconfig --region eu-west-2 --name aer-cluster
         terraform output -json | jq -r 'to_entries[] | "\(.key): \(.value.value)"' >> /tmp/values.yaml
