@@ -74,6 +74,6 @@ jobs:
       if: "${{ github.event.inputs.TERRAFORM_ACTION == 'apply' }}"
       # Some if about nodepool existing
       run: |
-        terraform output -json | jq -r 'map_values(.value) | to_entries | map("\(.key)=\(.value)")|.[]' >> values.yaml
+        terraform output -json | jq -r 'to_entries[] | "\(.key): \(.value.value)"' >> values.yaml
         cat values.yaml
         
