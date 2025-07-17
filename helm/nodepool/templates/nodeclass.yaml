@@ -3,7 +3,7 @@ kind: NodeClass
 metadata:
   name: burstable
 spec:
-  role: {{ .Values.iamRole }}
+  role: {{ .Values.nodeIamRoleName }}
   subnetSelectorTerms:
     - tags:
         cluster: {{ .Values.clusterName }}

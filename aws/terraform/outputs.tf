@@ -1,31 +1,35 @@
-output "cluster_name" {
+output "clusterName" {
     value = var.cluster_name
 }
 
-output "primary_vpc_id" {
+output "primaryVpcId" {
     value = module.vpc.vpc_id
 }
 
-output "secondary_vpc_id" {
+output "secondaryVpcId" {
     value = module.vpc_secondary.vpc_id
 }
 
-output "primary_azs" {
+output "primaryAzs" {
     value = module.vpc.azs
 }
 
-output "secondary_azs" {
+output "secondaryAzs" {
     value = module.vpc_secondary.azs
 }
 
-output "primary_private_subnets" {
+output "primaryPrivateSubnets" {
     value = module.vpc.private_subnets
 }
 
-output "secondary_private_subnets" {
+output "secondaryPrivateSubnets" {
     value = module.vpc_secondary.private_subnets
 }
 
-output "node_iam_role_arn" {
+output "nodeIamRoleArn" {
     value = module.eks.node_iam_role_arn
+}
+
+output "nodeIamRoleName" {
+    value = module.eks.node_iam_role_name
 }
