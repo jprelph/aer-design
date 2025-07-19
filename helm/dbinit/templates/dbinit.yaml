@@ -8,14 +8,19 @@ spec:
       containers:
       - name: dbinit
         image: jamesrelph/events-dbinit:latest
-        env:
-          - name: DBHOST
-            value: {{ .Values.globalEndpoint }}
-          - name: DBUSER
-            value: {{ .Values.dbUser }}
-          - name: DBPASSWORD
-            value: {{ .Values.dbPassword }}
-          - name: DBDATABASE
-            value: {{ .Values.dbName }}
+      - env:
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: events-secret
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: events-secret
+        envFrom:
+        - configMapRef:
+            name: events
       restartPolicy: Never
   backoffLimit: 4
