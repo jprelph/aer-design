@@ -69,18 +69,26 @@ jobs:
         chmod 700 get_helm.sh
         ./get_helm.sh
 
-    - name: Configure Nodepool Primary
+    - name: Configure Primary Cluster
       working-directory: ./aws/terraform
       if: "${{ github.event.inputs.TERRAFORM_ACTION == 'apply' }}"
       run: |
         aws eks update-kubeconfig --region eu-west-1 --name aer-cluster
         terraform output -json | jq -r 'to_entries[] | "\(.key): \(.value.value)"' >> /tmp/values.yaml
         helm install nodepool -f /tmp/values.yaml --set failoverRegion=primary oci://registry-1.docker.io/jamesrelph/nodepool:1.1.0
+        helm repo add secrets-store-csi-driver https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
+        helm install -n kube-system csi-secrets-store secrets-store-csi-driver/secrets-store-csi-driver
+        helm repo add aws-secrets-manager https://aws.github.io/secrets-store-csi-driver-provider-aws
+        helm install -n kube-system secrets-provider-aws aws-secrets-manager/secrets-store-csi-driver-provider-aws
 
-    - name: Configure Nodepool Secondary
+    - name: Configure Secondary Cluster
       working-directory: ./aws/terraform
       if: "${{ github.event.inputs.TERRAFORM_ACTION == 'apply' }}"
       run: |
         aws eks update-kubeconfig --region eu-west-2 --name aer-cluster
         terraform output -json | jq -r 'to_entries[] | "\(.key): \(.value.value)"' >> /tmp/values.yaml
         helm install nodepool -f /tmp/values.yaml --set failoverRegion=secondary oci://registry-1.docker.io/jamesrelph/nodepool:1.1.0
+        helm repo add secrets-store-csi-driver https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
+        helm install -n kube-system csi-secrets-store secrets-store-csi-driver/secrets-store-csi-driver
+        helm repo add aws-secrets-manager https://aws.github.io/secrets-store-csi-driver-provider-aws
+        helm install -n kube-system secrets-provider-aws aws-secrets-manager/secrets-store-csi-driver-provider-aws
