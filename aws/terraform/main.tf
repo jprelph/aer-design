@@ -1,5 +1,34 @@
 # Primary EKS Cluster
 
+# Global Role Setup
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["pods.eks.amazonaws.com"]
+    }
+
+    actions = [
+      "sts:AssumeRole",
+      "sts:TagSession"
+    ]
+  }
+}
+
+resource "aws_iam_role" "eks_sm_access" {
+  provider           = aws.primary
+  name               = "eks-pod-identity"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "sm" {
+  provider   = aws.primary
+  policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
+  role       = aws_iam_role.eks_sm_access.name
+}
+
 module "eks" {
   source   = "terraform-aws-modules/eks/aws"
   providers = {
@@ -30,7 +59,6 @@ module "eks" {
 }
 
 # Create Access entry for EKS without default nodeclass and nodepool
-
 resource "aws_eks_access_entry" "auto_mode" {
   provider = aws.primary
   cluster_name  = module.eks.cluster_name
@@ -46,6 +74,15 @@ resource "aws_eks_access_policy_association" "auto_mode" {
   access_scope {
     type = "cluster"
   }
+}
+
+# Associate Pod Identity with Primary Cluster
+resource "aws_eks_pod_identity_association" "eks_sm_association" {
+  provider        = aws.primary
+  cluster_name    = module.eks.cluster_name
+  namespace       = "default"
+  service_account = "secrets-manager-account"
+  role_arn        = aws_iam_role.eks_sm_access.arn
 }
 
 # Secondary EKS Cluster 
@@ -75,8 +112,16 @@ module "eks_secondary" {
   }
 }
 
-# Create Access entry for EKS without default nodeclass and nodepool
+# Associate Pod Identity with Primary Cluster
+resource "aws_eks_pod_identity_association" "eks_sm_association" {
+  provider        = aws.secondary
+  cluster_name    = module.eks.cluster_name
+  namespace       = "default"
+  service_account = "secrets-manager-account"
+  role_arn        = aws_iam_role.eks_sm_access.arn
+}
 
+# Create Access entry for EKS without default nodeclass and nodepool
 resource "aws_eks_access_entry" "auto_mode_secondary" {
   provider = aws.secondary
   cluster_name  = module.eks_secondary.cluster_name
