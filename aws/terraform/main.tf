@@ -112,8 +112,8 @@ module "eks_secondary" {
   }
 }
 
-# Associate Pod Identity with Primary Cluster
-resource "aws_eks_pod_identity_association" "eks_sm_association" {
+# Associate Pod Identity with Secondary Cluster
+resource "aws_eks_pod_identity_association" "eks_sm_association_secondary" {
   provider        = aws.secondary
   cluster_name    = module.eks.cluster_name
   namespace       = "default"
