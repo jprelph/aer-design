@@ -81,8 +81,8 @@ jobs:
         aws eks --region $SECONDARY_REGION update-kubeconfig --name $CLUSTER_NAME
         terraform output -json | jq -r 'to_entries[] | "\(.key): \(.value.value)"' >> /tmp/values.yaml
         helm install events -f /tmp/values.yaml --set dbUser=$DBUSER --set dbPassword=$DBPASSWORD --set dbName=$DBNAME oci://registry-1.docker.io/jamesrelph/events
-  
-        - name: Update Helm Chart Primary
+      
+    - name: Update Helm Chart Primary
       working-directory: ./aws/terraform
       if: "${{ github.event.inputs.HELM_ACTION == 'update' }}"
       run: |
