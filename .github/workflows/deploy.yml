@@ -71,7 +71,7 @@ jobs:
       run: |
         aws eks --region $PRIMARY_REGION update-kubeconfig --name $CLUSTER_NAME
         terraform output -json | jq -r 'to_entries[] | "\(.key): \(.value.value)"' >> /tmp/values.yaml
-        helm install -n default dbinit -f tmp/values.yaml --set dbUser=$DBUSER --set dbPassword=$DBPASSWORD --set dbName=$DBNAME oci://registry-1.docker.io/jamesrelph/dbinit:1.1.0
+        helm install -n default dbinit -f /tmp/values.yaml --set dbUser=$DBUSER --set dbPassword=$DBPASSWORD --set dbName=$DBNAME oci://registry-1.docker.io/jamesrelph/dbinit:1.1.0
         helm install events -f /tmp/values.yaml --set dbUser=$DBUSER --set dbPassword=$DBPASSWORD --set dbName=$DBNAME oci://registry-1.docker.io/jamesrelph/events
         
     - name: Install Helm Chart Secondary
