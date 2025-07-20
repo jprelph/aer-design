@@ -37,16 +37,3 @@ output "nodeIamRoleName" {
 output "globalEndpoint" {
     value = aws_rds_global_cluster.events.endpoint
 }
-
-output "dbUser" {
-    value = aws_rds_cluster.primary.master_username
-}
-
-output "dbPassword" {
-    sensitive = true
-    value = aws_rds_cluster.primary.master_password
-}
-
-output "dbName" {
-   value = aws_rds_cluster.primary.database_name
-}

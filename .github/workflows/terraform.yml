@@ -76,7 +76,7 @@ jobs:
         chmod 700 get_helm.sh
         ./get_helm.sh
     
-    - name: Configure Primary Cluster and Init DB
+    - name: Configure Primary Cluster
       working-directory: ./aws/terraform
       if: "${{ github.event.inputs.TERRAFORM_ACTION == 'apply' }}"
       run: |
@@ -87,7 +87,6 @@ jobs:
         helm install -n kube-system csi-secrets-store secrets-store-csi-driver/secrets-store-csi-driver
         helm repo add aws-secrets-manager https://aws.github.io/secrets-store-csi-driver-provider-aws
         helm install -n kube-system secrets-provider-aws aws-secrets-manager/secrets-store-csi-driver-provider-aws
-        helm install -n default dbinit --set-values dbUser=DBUSER dbPassword=DBPASSWORD dbName=DBNAME oci://registry-1.docker.io/jamesrelph/dbinit:1.1.0
 
     - name: Configure Secondary Cluster
       working-directory: ./aws/terraform
