@@ -55,7 +55,7 @@ jobs:
     - name: Plan Terraform
       working-directory: ./aws/terraform
       if: "${{ github.event.inputs.TERRAFORM_ACTION == 'plan' }}"
-      run: terraform plan
+      run: terraform plan -var dbUser="$DBUSER" -var dbPassword="$DBPASSWORD" -var dbName="$DBNAME"
 
     - name: Destroy Terraform
       working-directory: ./aws/terraform
@@ -66,7 +66,7 @@ jobs:
     - name: Apply Terraform
       working-directory: ./aws/terraform
       if: "${{ github.event.inputs.TERRAFORM_ACTION == 'apply' }}"
-      run: terraform apply --auto-approve
+      run: terraform apply -var dbUser="$DBUSER" -var dbPassword="$DBPASSWORD" -var dbName="$DBNAME" --auto-approve
 
     - name: Install Helm
       working-directory: ./aws/terraform

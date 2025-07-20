@@ -33,12 +33,10 @@ variable "secondary_vpc_public" {
 
 variable "dbUser" {
   type = string
-  ephemeral = true
 }
 
 variable "dbPassword" {
   type = string
-  ephemeral = true
 }
 
 variable "dbName" {
