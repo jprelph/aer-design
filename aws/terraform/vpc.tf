@@ -29,6 +29,7 @@ module "vpc" {
   public_subnets  = var.primary_vpc_public
   enable_ipv6     = true
   public_subnet_assign_ipv6_address_on_creation = true
+  private_subnet_assign_ipv6_address_on_creation = true
   public_subnet_ipv6_prefixes   = [0, 1, 2]
   private_subnet_ipv6_prefixes  = [3, 4, 5]
   enable_nat_gateway   = true
