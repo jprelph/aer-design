@@ -30,3 +30,17 @@ variable "secondary_vpc_private" {
 variable "secondary_vpc_public" {
  type = list(string) 
 }
+
+variable "dbUser" {
+  type = string
+  ephemeral = true
+}
+
+variable "dbPassword" {
+  type = string
+  ephemeral = true
+}
+
+variable "dbName" {
+  type = string
+}

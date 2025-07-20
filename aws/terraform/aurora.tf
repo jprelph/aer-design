@@ -45,9 +45,9 @@ resource "aws_rds_cluster" "primary" {
   engine_version            = aws_rds_global_cluster.events.engine_version
   engine_mode               = "provisioned"
   cluster_identifier        = "events-primary-cluster"
-  master_username           = "events_user"
-  master_password           = "somepass123"
-  database_name             = "events_db"
+  master_username           = var.dbUser
+  master_password           = var.dbPassword
+  database_name             = var.dbName
   global_cluster_identifier = aws_rds_global_cluster.events.id
   db_subnet_group_name      = aws_db_subnet_group.events_primary.name
   skip_final_snapshot       = true

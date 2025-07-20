@@ -33,6 +33,13 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
+    
+    - name: Get secrets by name and by ARN
+      uses: aws-actions/aws-secretsmanager-get-secrets@v2
+      with:
+        secret-ids: |
+          ,arn:aws:secretsmanager:eu-west-1:670114001127:secret:eventsDb-RQMi9g
+        parse-json-secrets: true
 
     - name: Configure Terraform
       working-directory: ./aws/terraform
@@ -68,8 +75,8 @@ jobs:
         curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
         chmod 700 get_helm.sh
         ./get_helm.sh
-
-    - name: Configure Primary Cluster
+    
+    - name: Configure Primary Cluster and Init DB
       working-directory: ./aws/terraform
       if: "${{ github.event.inputs.TERRAFORM_ACTION == 'apply' }}"
       run: |
@@ -80,6 +87,7 @@ jobs:
         helm install -n kube-system csi-secrets-store secrets-store-csi-driver/secrets-store-csi-driver
         helm repo add aws-secrets-manager https://aws.github.io/secrets-store-csi-driver-provider-aws
         helm install -n kube-system secrets-provider-aws aws-secrets-manager/secrets-store-csi-driver-provider-aws
+        helm install -n default dbinit --set-values dbUser=DBUSER dbPassword=DBPASSWORD dbName=DBNAME oci://registry-1.docker.io/jamesrelph/dbinit:1.1.0
 
     - name: Configure Secondary Cluster
       working-directory: ./aws/terraform
