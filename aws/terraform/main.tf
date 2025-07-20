@@ -44,7 +44,6 @@ module "eks" {
     node_pools = []
   }
   vpc_id     = module.vpc.vpc_id
-  cluster_ip_family = "ipv6"
   subnet_ids = setunion(
     module.vpc.public_subnets,
     module.vpc.private_subnets
@@ -103,7 +102,6 @@ module "eks_secondary" {
     node_pools = []
   }
   vpc_id     = module.vpc_secondary.vpc_id
-  cluster_ip_family = "ipv6"
   subnet_ids = setunion(
     module.vpc_secondary.public_subnets,
     module.vpc_secondary.private_subnets

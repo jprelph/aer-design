@@ -17,22 +17,8 @@ spec:
               secretKeyRef:
                 key: password
                 name: events-secret
-        envFrom:
-          - configMapRef:
-              name: events
         name: dbinit
         image: jamesrelph/events-dbinit:latest
-        volumeMounts:
-          - mountPath: /events-secret
-            name: events-secret
-            readOnly: true
       serviceAccountName: secrets-manager-account
-      volumes:
-        - csi:
-            driver: secrets-store.csi.k8s.io
-            readOnly: true
-            volumeAttributes:
-              secretProviderClass: events-spc
-          name: events-secret
       restartPolicy: Never
   backoffLimit: 4
