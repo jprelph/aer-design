@@ -6,19 +6,16 @@ spec:
   template:
     spec:
       containers:
-      - env:
-          - name: DB_USER
-            valueFrom:
-              secretKeyRef:
-                key: username
-                name: events-secret
-          - name: DB_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: password
-                name: events-secret
-        name: dbinit
+      - name: dbinit
         image: jamesrelph/events-dbinit:latest
-      serviceAccountName: secrets-manager-account
+        env:
+          - name: DBHOST
+            value: {{ .Values.globalEndpoint }}
+          - name: DBUSER
+            value: {{ .Values.dbUser }}
+          - name: DBPASSWORD
+            value: {{ .Values.dbPassword }}
+          - name: DBDATABASE
+            value: {{ .Values.dbName }}
       restartPolicy: Never
   backoffLimit: 4
