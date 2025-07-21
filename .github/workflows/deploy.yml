@@ -14,10 +14,11 @@ on:
           - delete
       DEPLOYMENT_STRATEGY:
         description: "Deployment Strategy"
-        required: false
-        default: "blue"
+        required: true
+        default: "standard"
         type: choice
         options:
+          - standard
           - blue
           - green
           - canary
