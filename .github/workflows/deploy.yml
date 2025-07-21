@@ -12,7 +12,15 @@ on:
           - install
           - update
           - delete
-    
+      DEPLOYMENT_STRATEGY:
+        description: "Deployment Strategy"
+        required: false
+        default: "blue"
+        type: choice
+        options:
+          - blue
+          - green
+          - canary
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -109,3 +117,21 @@ jobs:
       if: "${{ github.event.inputs.HELM_ACTION == 'delete' }}"
       run: |
         helm delete events
+
+    - name: Install Helm Chart Blue
+      working-directory: ./aws/terraform
+      if: "${{ github.event.inputs.HELM_ACTION == 'install' &&  github.event.inputs.DEPLOYMENT_STRATEGY == 'blue' }}"
+      run: |
+        aws eks --region $PRIMARY_REGION update-kubeconfig --name $CLUSTER_NAME
+        terraform output -json | jq -r 'to_entries[] | "\(.key): \(.value.value)"' >> /tmp/values.yaml
+        kubectl create namespace blue
+        helm install events -f /tmp/values.yaml --set dbUser=$DBUSER --set dbPassword=$DBPASSWORD --set dbName=$DBNAME oci://registry-1.docker.io/jamesrelph/events
+        
+    - name: Install Helm Chart Blue Secondary
+      working-directory: ./aws/terraform
+      if: "${{ github.event.inputs.HELM_ACTION == 'install' && github.event.inputs.DEPLOYMENT_STRATEGY == 'blue' }}"
+      run: |
+        aws eks --region $SECONDARY_REGION update-kubeconfig --name $CLUSTER_NAME
+        terraform output -json | jq -r 'to_entries[] | "\(.key): \(.value.value)"' >> /tmp/values.yaml
+        kubectl create namespace blue
+        helm install events -f /tmp/values.yaml --set dbUser=$DBUSER --set dbPassword=$DBPASSWORD --set dbName=$DBNAME oci://registry-1.docker.io/jamesrelph/events
