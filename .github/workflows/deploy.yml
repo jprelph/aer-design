@@ -125,8 +125,7 @@ jobs:
       run: |
         aws eks --region $PRIMARY_REGION update-kubeconfig --name $CLUSTER_NAME
         terraform output -json | jq -r 'to_entries[] | "\(.key): \(.value.value)"' >> /tmp/values.yaml
-        kubectl create namespace blue
-        helm install events -f /tmp/values.yaml --set dbUser=$DBUSER --set dbPassword=$DBPASSWORD --set dbName=$DBNAME oci://registry-1.docker.io/jamesrelph/events
+        helm install events -f /tmp/values.yaml. --namespace blue --create-namespace --set dbUser=$DBUSER --set dbPassword=$DBPASSWORD --set dbName=$DBNAME oci://registry-1.docker.io/jamesrelph/events
         
     - name: Install Helm Chart Blue Secondary
       working-directory: ./aws/terraform
@@ -134,5 +133,4 @@ jobs:
       run: |
         aws eks --region $SECONDARY_REGION update-kubeconfig --name $CLUSTER_NAME
         terraform output -json | jq -r 'to_entries[] | "\(.key): \(.value.value)"' >> /tmp/values.yaml
-        kubectl create namespace blue
-        helm install events -f /tmp/values.yaml --set dbUser=$DBUSER --set dbPassword=$DBPASSWORD --set dbName=$DBNAME oci://registry-1.docker.io/jamesrelph/events
+        helm install events -f /tmp/values.yaml --namespace blue --create-namespace --set dbUser=$DBUSER --set dbPassword=$DBPASSWORD --set dbName=$DBNAME oci://registry-1.docker.io/jamesrelph/events
