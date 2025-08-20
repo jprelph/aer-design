@@ -13,10 +13,10 @@ spec:
       requirements:
         - key: "eks.amazonaws.com/instance-category"
           operator: In
-          values: ["t"]
+          values: ["m"]
         - key: "eks.amazonaws.com/instance-cpu"
           operator: In
-          values: ["1", "2", "4", "8"]
+          values: ["2", "4", "8", "16"]
         - key: "topology.kubernetes.io/zone"
           operator: In
           {{- if eq .Values.failoverRegion "primary" }}
@@ -29,5 +29,5 @@ spec:
           values: ["amd64"]
 
   limits:
-    cpu: "1000"
+    cpu: "16"
     memory: 1000Gi
